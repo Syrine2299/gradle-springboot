@@ -10,10 +10,10 @@ pipeline {
         REPO_URL = 'git@github.com:kamalverma-ttn/gradle-springboot.git'
     }
     stages {
+        
         stage('Git Checkout') {
             agent any 
             steps {
-                echo 'Building Assets...'
                 checkout([
 	                $class: 'GitSCM', 
 	                branches: [[name: '*/master']],  
@@ -22,19 +22,22 @@ pipeline {
 	           sh "ls -l"
             }
         }
-        stage('Build') {
+        
+        stage('Gradle Build') {
             agent any
             steps {
                 sh "gradle clean build"
             }
         }
-        stage('Package') {
+        
+        stage('Package Code') {
             agent any
             steps {
                 sh "docker build -t \${APP_NAME}:\${BUILD_NUMBER} ."
             }
         }
-        stage('Deploy') {
+        
+        stage('Deploy App') {
             agent any
             steps {
                 sh "docker ps -a"
